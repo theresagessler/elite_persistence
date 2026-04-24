@@ -7,8 +7,17 @@ library(visNetwork)
 # Load data
 load("network.RData")
 
+# Keep only MPs
+mp_ids <- V(g)$name[V(g)$type == "MP"]
+
+labels_mp <- labels %>%
+  filter(id %in% mp_ids)
+
 # Create named choices: "Name (ID)" -> label, but keep ID accessible
-label_choices <- setNames(labels$label, paste0(labels$label, " (", labels$id, ")"))
+label_choices <- setNames(
+  labels_mp$label,
+  paste0(labels_mp$label, " (", labels_mp$id, ")")
+)
 
 # ---- UI ----
 ui <- dashboardPage(
@@ -88,7 +97,7 @@ server <- function(input, output, session) {
     # Extract label (input is label value)
     input_label <- input$target
     
-    matches <- labels %>%
+    matches <- labels_mp %>%
       filter(label == input_label)
     
     if (nrow(matches) == 1) {
@@ -103,7 +112,7 @@ server <- function(input, output, session) {
     
     req(input$target)
     
-    matches <- labels %>%
+    matches <- labels_mp %>%
       filter(label == input$target)
     
     if (nrow(matches) > 1) {
@@ -124,7 +133,7 @@ server <- function(input, output, session) {
     
     req(input$target)
     
-    matches <- labels %>%
+    matches <- labels_mp %>%
       filter(label == input$target)
     
     if (nrow(matches) == 0) {
