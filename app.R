@@ -223,15 +223,25 @@ server <- function(input, output, session) {
     nodes_in_paths <- unique(unlist(res$paths))
     sub_g <- induced_subgraph(res$ego_subgraph, vids = nodes_in_paths)
     
-    nodes <- data.frame(
-      id = V(sub_g)$name,
-      label = ifelse(
-        is.na(match(V(sub_g)$name, labels$id)),
-        V(sub_g)$name,
-        labels$label[match(V(sub_g)$name, labels$id)]
-      ),
-      group = V(sub_g)$type
-    )
+nodes <- data.frame(
+  id = V(sub_g)$name,
+  label = ifelse(
+    is.na(match(V(sub_g)$name, labels$id)),
+    V(sub_g)$name,
+    labels$label[match(V(sub_g)$name, labels$id)]
+  ),
+  group = V(sub_g)$type
+)
+
+# Add Wikidata link
+nodes$url <- paste0("https://www.wikidata.org/wiki/", nodes$id)
+
+# Tooltip (hover)
+nodes$title <- paste0(
+  "<b>", nodes$label, "</b><br>",
+  "ID: ", nodes$id, "<br>",
+  "<a href='", nodes$url, "' target='_blank'>Open in Wikidata</a>"
+)
     
 nodes$color <- ifelse(
   nodes$id == res$target, "#2C3E50",       # target (dark)
@@ -241,13 +251,23 @@ nodes$color <- ifelse(
     
     edges <- as_data_frame(sub_g, what = "edges")
     
-    visNetwork(nodes, edges) %>%
-      visOptions(
-        highlightNearest = TRUE,
-        nodesIdSelection = TRUE
-      ) %>%
-      visEdges(arrows = "to") %>%
-      visLayout(randomSeed = 42)
+visNetwork(nodes, edges) %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visInteraction(navigationButtons = TRUE) %>%
+  visEvents(selectNode = "function(nodes) {
+    var node = nodes.nodes[0];
+    var url = this.body.data.nodes.get(node).url;
+    window.open(url, '_blank');
+  }") %>%
+  visEdges(
+    arrows = "to",
+    color = list(color = "#A0A0A0"),
+    width = 1.5
+  ) %>%
+  visLayout(randomSeed = 42)
   })
 }
 
