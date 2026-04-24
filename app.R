@@ -7,7 +7,6 @@ library(visNetwork)
 # Load data
 load("network.RData")
 
-
 # Create named choices: "Name (ID)" -> label, but keep ID accessible
 label_choices <- setNames(labels$label, paste0(labels$label, " (", labels$id, ")"))
 
