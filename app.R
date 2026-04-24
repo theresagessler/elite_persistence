@@ -60,13 +60,13 @@ ui <- dashboardPage(
         width = 12,
         status = "info",
         solidHeader = TRUE,
-        HTML("
-          <b>Colors:</b><br>
-          🔴 Target node<br>
-          🟠 Slave Owners (SO)<br>
-          🔵 MPs<br>
-          ⚪ Other nodes
-        ")
+HTML("
+  <b>Colors:</b><br>
+  <span style='color:#2C3E50;'>●</span> Target node<br>
+  <span style='color:#E69F00;'>●</span> Slave Owners (SO)<br>
+  <span style='color:#56B4E9;'>●</span> MPs<br>
+  <span style='color:#BFC0C0;'>●</span> Other nodes
+")
       )
     )
   )
@@ -224,11 +224,11 @@ server <- function(input, output, session) {
       group = V(sub_g)$type
     )
     
-    nodes$color <- ifelse(
-      nodes$id == res$target, "red",
-      ifelse(nodes$group == "SO", "orange",
-             ifelse(nodes$group == "MP", "lightblue", "gray"))
-    )
+nodes$color <- ifelse(
+  nodes$id == res$target, "#2C3E50",       # target (dark)
+  ifelse(nodes$group == "SO", "#E69F00",   # muted amber
+         ifelse(nodes$group == "MP", "#56B4E9", "#BFC0C0")) # soft blue / grey
+)
     
     edges <- as_data_frame(sub_g, what = "edges")
     
