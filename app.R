@@ -257,7 +257,7 @@ visNetwork(nodes, edges) %>%
     nodesIdSelection = TRUE
   ) %>%
   visInteraction(navigationButtons = TRUE) %>%
-  visEvents(selectNode = "function(nodes) {
+  visEvents(doubleClick = "function(nodes) {
     var node = nodes.nodes[0];
     var url = this.body.data.nodes.get(node).url;
     window.open(url, '_blank');
