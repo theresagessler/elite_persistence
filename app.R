@@ -6,7 +6,6 @@ library(visNetwork)
 
 # Load data
 load("network_list.RData")
-load("mplabels.RData")
 
 # Dropdown: show "Name (ID)" but store ID
 label_choices <- setNames(
