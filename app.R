@@ -30,7 +30,7 @@ ui <- dashboardPage(
     ),
     
     sliderInput("degree", "Degrees of separation",
-                min = 1, max = 6, value = 3),
+                min = 1, max = 6, value = 6),
     
     actionButton("run", "Run Analysis"),
     
